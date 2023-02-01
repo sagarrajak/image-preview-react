@@ -78,9 +78,14 @@ function ImagePreview(props) {
   return (
     <div className={style.imageContainer} id="main-container">
       <div className={style.imgHeader}>
-        <div onClick={onClickRotate}>rotate</div>
-        <div onClick={updateScalePlus}>Scale + </div>
-        <div onClick={updateScaleMinus}>Scale - </div>
+        <div onClick={onClickRotate}>
+          <i class="fa-solid fa-rotate-right"></i>
+        </div>
+        <div onClick={updateScalePlus}>
+          <i class="fa-solid fa-magnifying-glass-plus"></i> </div>
+        <div onClick={updateScaleMinus}>
+          <i class="fa-solid fa-magnifying-glass-minus"></i>
+        </div>
         {!isInGrabState && <div onClick={grab}>grab</div> }
         {isInGrabState && <div onClick={unGrab}>un grab</div>}
         <select name="size"  onChange={(evt) => scaleAtParticularRatio(evt.target.value/100)}>
@@ -95,7 +100,7 @@ function ImagePreview(props) {
         style={{
           cursor: isInGrabState ? 'grab' : 'default',
           transform: `rotate(${rotaion}deg) scale(${scale})`,
-          transformOrigin: rotaion > 0 ? '' : 'top left' 
+          transformOrigin: rotaion <= 0 ? 'top left' : '' 
         }}
       >
         <img
@@ -107,10 +112,10 @@ function ImagePreview(props) {
       </div>
     
       <div className={style.left} onClick={prevSlide}>
-        left
+        <i class="fa-solid fa-chevron-left fa-2xl"></i>
       </div>
       <div className={style.right} onClick={nextSlide}>
-        right
+        <i class="fa-solid fa-chevron-right fa-2xl"></i>
       </div>
       {/* <div className={style.bottomAction}>header</div> */}
     </div>
