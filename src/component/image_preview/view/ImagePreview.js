@@ -95,7 +95,7 @@ function ImagePreview(props) {
         style={{
           cursor: isInGrabState ? 'grab' : 'default',
           transform: `rotate(${rotaion}deg) scale(${scale})`,
-          transformOrigin: 'top left'
+          transformOrigin: rotaion > 0 ? '' : 'top left' 
         }}
       >
         <img
