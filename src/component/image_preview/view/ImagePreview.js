@@ -41,13 +41,11 @@ function ImagePreview(props) {
     const cHeight = container.clientHeight;
     
     if (rotaion % 180 === 0) {
-      image.style.width = cWidth + 'px';
+      image.style.width = '100%';
       image.style.height = 'auto'
     }
     else {
       image.style.width = iWidth / (cWidth / cHeight) + 'px';
-      console.log(iWidth / (cWidth / cHeight));
-      console.log(iWidth , cWidth, cHeight);
       image.style.height = 'auto'
     }
 
@@ -67,6 +65,12 @@ function ImagePreview(props) {
         <div onClick={onClickRotate}>rotate</div>
         <div onClick={updateScalePlus}>Scale + </div>
         <div onClick={updateScaleMinus}>Scale - </div>
+        <select name="size"  onChange={(evt) => setScale(+(evt.target.value/100))}>
+          <option>50</option>
+          <option>100</option>
+          <option>200</option>
+          <option>300</option>
+        </select>
       </div>
       
       <div className={style.imageCarousel} id="image-container" style={{ transform: `rotate(${rotaion}deg) scale(${scale})` }}>
