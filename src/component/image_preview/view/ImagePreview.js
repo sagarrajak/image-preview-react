@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import style from "./imagePreview.module.css";
+import { useMouseDrag } from './useMouseDrag';
 
 function ImagePreview(props) {
   const { galleryImages } = props;
   const [slideNumber, setSlideNumber] = useState(0);
   const [rotaion, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
+  const [isInGrabState, setIsInGrabState] = useState(false);
+  const mainContainer = document.getElementById('main-container');
 
+  useMouseDrag({mainContainer, isInGrabState});
 
   const prevSlide = () => {
     slideNumber === 0
@@ -46,11 +50,10 @@ function ImagePreview(props) {
     }
     else {
       image.style.width = iWidth / (cWidth / cHeight) + 'px';
-      image.style.height = 'auto'
+      image.style.height = '100%';
     }
 
   }, [rotaion]);
-
 
   const onClickRotate = () => {
     let newRotation = rotaion + 90;
@@ -59,13 +62,28 @@ function ImagePreview(props) {
     }
     setRotation(newRotation);
   };
+
+  const grab = () => {
+    setIsInGrabState(true);
+  };
+
+  const unGrab = () => {
+    setIsInGrabState(false);
+  }
+
+  const scaleAtParticularRatio = (value) => {
+    setScale(value)
+  };
+
   return (
-    <div className={style.imageContainer}>
+    <div className={style.imageContainer} id="main-container">
       <div className={style.imgHeader}>
         <div onClick={onClickRotate}>rotate</div>
         <div onClick={updateScalePlus}>Scale + </div>
         <div onClick={updateScaleMinus}>Scale - </div>
-        <select name="size"  onChange={(evt) => setScale(+(evt.target.value/100))}>
+        {!isInGrabState && <div onClick={grab}>grab</div> }
+        {isInGrabState && <div onClick={unGrab}>un grab</div>}
+        <select name="size"  onChange={(evt) => scaleAtParticularRatio(evt.target.value/100)}>
           <option>50</option>
           <option>100</option>
           <option>200</option>
@@ -73,14 +91,20 @@ function ImagePreview(props) {
         </select>
       </div>
       
-      <div className={style.imageCarousel} id="image-container" style={{ transform: `rotate(${rotaion}deg) scale(${scale})` }}>
-          <img
-            id="image"
-            className={style.imageCarouselImage}
-            src={galleryImages[slideNumber].img}
-            alt=""
-          />
-        </div>
+      <div className={style.imageCarousel} id="image-container"
+        style={{
+          cursor: isInGrabState ? 'grab' : 'default',
+          transform: `rotate(${rotaion}deg) scale(${scale})`,
+          transformOrigin: 'top left'
+        }}
+      >
+        <img
+          id="image"
+          className={style.imageCarouselImage}
+          src={galleryImages[slideNumber].img}
+          alt=""
+        />
+      </div>
     
       <div className={style.left} onClick={prevSlide}>
         left
@@ -88,7 +112,7 @@ function ImagePreview(props) {
       <div className={style.right} onClick={nextSlide}>
         right
       </div>
-      <div className={style.bottomAction}>header</div>
+      {/* <div className={style.bottomAction}>header</div> */}
     </div>
   );
 }
