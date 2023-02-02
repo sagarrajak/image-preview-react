@@ -1,4 +1,4 @@
-import React from "react";
+  import React from "react";
 import style from "./imagePreview.module.css";
 import ImagePreview from "./ImagePreview";
 import SideBar from "./SideBar";
@@ -27,6 +27,9 @@ function index() {
         {
           img: "https://images.unsplash.com/photo-1503249023995-51b0f3778ccf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aGQlMjBwaG90b3N8ZW58MHx8MHx8&w=1000&q=80",
         },
+        {
+          doc: '/sample.pdf'
+        }
       ];
   return (
     <div className={style.container}>
