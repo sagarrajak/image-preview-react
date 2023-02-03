@@ -4,6 +4,21 @@ import { useMouseDrag } from './useMouseDrag';
 import { Document, Page } from 'react-pdf';
 
 
+const getAngle = (angle) => {
+  switch(angle) {
+    case 0:
+      return 'top left';
+    case 90:
+      return 'bottom left';
+    case 180:
+      return 'bottom right';
+    case 270: 
+      return 'top right';
+    default:
+      return 'top left';
+  }
+}
+
 function ImagePreview(props) {
   const { galleryImages } = props;
   const [slideNumber, setSlideNumber] = useState(0);
@@ -127,27 +142,36 @@ function ImagePreview(props) {
       <div className={style.imageCarousel} id="image-container"
         style={{
           cursor: isInGrabState ? 'grab' : 'default',
-          transform: `rotate(${rotaion}deg) scale(${scale})`,
-          transformOrigin: rotaion <= 0 ? 'top left' : '' 
+          transform: `rotate(${rotaion}deg)`,
+          
         }}
       >
         {
-          galleryImages[slideNumber].img ?
-            <img
-              id="image"
-              className={style.imageCarouselImage}
-              src={galleryImages[slideNumber].img}
-              alt=""
-            /> :
-            <Document
-            file={{url: galleryImages[slideNumber].doc}}
-            options={{ workerSrc: "/pdf.worker.js" }}
-            onLoadSuccess={onDocumentLoadSuccess}
+          <div
+            style={{
+              transform: `scale(${scale})`,
+              transformOrigin: getAngle(rotaion),
+            }}
           >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-            ))}
-          </Document>
+            {
+              galleryImages[slideNumber].img ?
+                <img
+                  id="image"
+                  className={style.imageCarouselImage}
+                  src={galleryImages[slideNumber].img}
+                  alt=""
+                /> :
+                <Document
+                  file={{ url: galleryImages[slideNumber].doc }}
+                  options={{ workerSrc: "/pdf.worker.js" }}
+                  onLoadSuccess={onDocumentLoadSuccess}
+                >
+                  {Array.from(new Array(numPages), (el, index) => (
+                    <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+                  ))}
+                </Document>
+            }
+          </div>
         }
       </div>
     
