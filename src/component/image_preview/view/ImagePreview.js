@@ -3,22 +3,6 @@ import style from "./imagePreview.module.css";
 import { useMouseDrag } from './useMouseDrag';
 import { Document, Page } from 'react-pdf';
 
-
-const getAngle = (angle) => {
-  switch(angle) {
-    case 0:
-      return 'top left';
-    case 90:
-      return 'bottom left';
-    case 180:
-      return 'bottom right';
-    case 270: 
-      return 'top right';
-    default:
-      return 'top left';
-  }
-}
-
 function ImagePreview(props) {
   const { galleryImages } = props;
   const [slideNumber, setSlideNumber] = useState(0);
@@ -26,6 +10,14 @@ function ImagePreview(props) {
   const [scale, setScale] = useState(1);
   const [isInGrabState, setIsInGrabState] = useState(false);
   const [isImageRotationEnabled, setIsImageRotationEnabled] = useState(true);
+
+  const [width, setWidth] = useState();
+  const [height, setHeight] = useState();
+
+  const [baseWidth, setBaseWidth] = useState();
+  const [baseHeight, setBaseHeight] = useState();
+
+
   const mainContainer = document.getElementById('main-container');
 
   const [numPages, setNumPages] = useState(null);
@@ -35,6 +27,7 @@ function ImagePreview(props) {
   }
 
   useMouseDrag({mainContainer, isInGrabState});
+
   
   const setRotationBeforeSlide = React.useCallback((slideNumber) => {
     if (!galleryImages[slideNumber].img) { 
@@ -79,22 +72,31 @@ function ImagePreview(props) {
   }
 
   useEffect(() => {
-    const container = document.getElementById("image-container");
-    const image = document.getElementById("image");
-    const iWidth = image.width;
-    const iHeight = image.height; 
-    const cWidth = container.clientWidth;
-    const cHeight = container.clientHeight;
-    
-    if (rotaion % 180 === 0) {
-      image.style.width = '100%';
-      image.style.height = 'auto'
+    if (scale > 1) {
+        setIsInGrabState(true);
+    } else {
+        setIsInGrabState(false);
     }
-    else {
-      image.style.width = iWidth / (cWidth / cHeight) + 'px';
-      image.style.height = '100%';
+  }, [scale]);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = galleryImages[slideNumber].img;
+    img.onload = function() {
+      setBaseWidth(this.width*0.75);
+      setBaseHeight(this.height*0.75);
     }
-  }, [rotaion]);
+  }, [slideNumber, galleryImages]);
+
+  useEffect(() => {
+    if (rotaion%180 === 0) {
+      setWidth(baseWidth*scale);
+      setHeight(baseHeight*scale);
+    } else {
+      setHeight(baseWidth*scale);
+      setWidth(baseHeight*scale);
+    }
+  }, [scale, rotaion, baseHeight, baseWidth]);
 
   const onClickRotate = () => {
     let newRotation = rotaion + 90;
@@ -104,20 +106,12 @@ function ImagePreview(props) {
     setRotation(newRotation);
   };
 
-  const grab = () => {
-    setIsInGrabState(true);
-  };
-
-  const unGrab = () => {
-    setIsInGrabState(false);
-  }
-
   const scaleAtParticularRatio = (value) => {
     setScale(value)
   };
 
   return (
-    <div className={style.imageContainer} id="main-container">
+    <div className={style.imageContainer} >
       <div className={style.imgHeader}>
         {isImageRotationEnabled && <div onClick={onClickRotate}>
           <i className="fa-solid fa-rotate-right"></i>
@@ -127,54 +121,49 @@ function ImagePreview(props) {
         <div onClick={updateScaleMinus}>
           <i className="fa-solid fa-magnifying-glass-minus"></i>
         </div>
-        {!isInGrabState && <div onClick={grab}>grab</div> }
-        {isInGrabState && <div onClick={unGrab}>un grab</div>}
         <div>
           <select name="size"  onChange={(evt) => scaleAtParticularRatio(evt.target.value/100)}>
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={200}>200</option>
-            <option value={300}>300</option>
           </select>
         </div>
       </div>
-      
-      <div className={style.imageCarousel} id="image-container"
-        style={{
-          cursor: isInGrabState ? 'grab' : 'default',
-          transform: `rotate(${rotaion}deg)`,
-          
-        }}
+
+      <div
+        className={style.carouselContainer}
+        id="main-container"
       >
-        {
-          <div
-            style={{
-              transform: `scale(${scale})`,
-              transformOrigin: getAngle(rotaion),
-            }}
-          >
-            {
-              galleryImages[slideNumber].img ?
-                <img
-                  id="image"
-                  className={style.imageCarouselImage}
-                  src={galleryImages[slideNumber].img}
-                  alt=""
-                /> :
-                <Document
-                  file={{ url: galleryImages[slideNumber].doc }}
-                  options={{ workerSrc: "/pdf.worker.js" }}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                >
-                  {Array.from(new Array(numPages), (el, index) => (
-                    <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-                  ))}
-                </Document>
-            }
-          </div>
-        }
+        <div className={style.imageCarousel} id="image-container"
+          style={{
+            cursor: isInGrabState ? 'grab' : 'default',
+            transform: `rotate(${rotaion}deg)`,
+            height: `${height}px`,
+            width: `${width}px`
+          }}
+        >
+          {
+            galleryImages[slideNumber].img ?
+              <img
+                id="image"
+                className={style.imageCarouselImage}
+                src={galleryImages[slideNumber].img}
+                alt=""
+                width={width}
+                height={height}
+              /> :
+              <Document
+                file={{ url: galleryImages[slideNumber].doc }}
+                options={{ workerSrc: "/pdf.worker.js" }}
+                onLoadSuccess={onDocumentLoadSuccess}
+              >
+                {Array.from(new Array(numPages), (el, index) => (
+                  <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+                ))}
+              </Document>
+          }
+        </div>
       </div>
-    
       <div className={style.left} onClick={prevSlide}>
         <i class="fa-solid fa-chevron-left fa-2xl"></i>
       </div>

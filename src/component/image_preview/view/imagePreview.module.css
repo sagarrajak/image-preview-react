@@ -10,6 +10,7 @@
   display: flex;
 }
 
+
 .imageContainer {
   position: fixed;
   background-color: rgb(60, 64, 67, 0.8);
@@ -19,23 +20,7 @@
   justify-content: center;
   /* align-items: center; */
   flex-direction: column;
-  overflow: scroll;
-}
-
-.imageCarousel {
-  height: calc(100% - 100px);
-  display: flex;
-  justify-content: center;
-  object-fit: contain;
-  transition: transform ease-in-out 0.3s;
-}
-
-.imageCarouselImage {
-  object-fit: contain;
-  width: 100%;
-  height: 90%;
-  background-size: contain;
-  background-clip: border-box;
+  /* overflow: scroll; */
 }
 
 .imgHeader {
@@ -66,6 +51,29 @@
   cursor: pointer;
 }
 
+
+.carouselContainer {
+  width: 100%;
+  height: calc(100% - 60px);
+  overflow: scroll;
+  display: flex;
+  justify-content: center;
+  object-fit: contain;
+  margin-top: 10px;
+}
+
+.imageCarousel {
+  height: 100%;
+  transition: transform ease-in-out 0.3s;
+}
+
+.imageCarouselImage {
+  object-fit: contain;
+  background-size: contain;
+  background-clip: border-box;
+}
+
+
 .left{
     position:fixed;
     top: 50%;
@@ -90,3 +98,4 @@
     left: 0;
     right: 0;
 }
+
