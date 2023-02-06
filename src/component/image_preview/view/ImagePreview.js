@@ -118,10 +118,13 @@ function ImagePreview(props) {
   };
 
   const downloadImage = () => {
-    const image = document.createElement('a');
-    image.href = galleryImages[slideNumber].img;
-    image.target = '_blank';
-    image.click();
+    const link = document.createElement("a");
+    link.setAttribute("type", "hidden");
+    document.body.appendChild(link);
+    link.setAttribute("href", galleryImages[slideNumber].img);
+    link.setAttribute("download", galleryImages[slideNumber].img.split('/').pop());
+    link.click();
+    document.body.removeChild(link);
   }
 
   return (
