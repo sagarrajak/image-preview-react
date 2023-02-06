@@ -28,22 +28,17 @@ function ImagePreview(props) {
 
   useMouseDrag({mainContainer, isInGrabState});
 
-  
-  const setRotationBeforeSlide = React.useCallback((slideNumber) => {
-    if (!galleryImages[slideNumber].img) { 
-      setRotation(0);
-      setIsImageRotationEnabled(false);
-    } else {
-      setIsImageRotationEnabled(true);
-    }
-  }, [galleryImages]);
+  const resetBeforeScroll = () => {
+    setRotation(0);
+    setScale(1);
+  }
 
   const prevSlide = () => {
     let currentIndex = null;
     currentIndex = slideNumber === 0
       ? galleryImages.length - 1
       : slideNumber - 1;
-    setRotationBeforeSlide(currentIndex);
+    resetBeforeScroll();
     setTimeout(() => {
       setSlideNumber(currentIndex);
     }, 100);
@@ -55,7 +50,7 @@ function ImagePreview(props) {
     currentIndex = slideNumber + 1 === galleryImages.length
       ? 0
       : slideNumber + 1;
-    setRotationBeforeSlide(currentIndex);
+    resetBeforeScroll();
     setTimeout(() => {
       setSlideNumber(currentIndex);
     }, 100);
@@ -71,6 +66,8 @@ function ImagePreview(props) {
     setScale(scale - 0.05);
   }
 
+
+
   useEffect(() => {
     if (scale > 1) {
         setIsInGrabState(true);
@@ -82,13 +79,23 @@ function ImagePreview(props) {
   useEffect(() => {
     const img = new Image();
     img.src = galleryImages[slideNumber].img;
+    const checkIfContainerIsLargerThenImage = (width, height) => {
+      const imageContainer = document.getElementById('main-container');
+      const containerHeight = imageContainer.offsetHeight;
+      if (height > containerHeight) {
+        setBaseHeight(containerHeight*0.98);
+        const aspectRatio = parseInt((height/width));
+        setBaseWidth((1/aspectRatio)*containerHeight*0.98);
+      }
+    };
     img.onload = function() {
-      setBaseWidth(this.width*0.75);
-      setBaseHeight(this.height*0.75);
+      checkIfContainerIsLargerThenImage(this.width, this.height);
     }
   }, [slideNumber, galleryImages]);
 
+
   useEffect(() => {
+
     if (rotaion%180 === 0) {
       setWidth(baseWidth*scale);
       setHeight(baseHeight*scale);
@@ -110,6 +117,13 @@ function ImagePreview(props) {
     setScale(value)
   };
 
+  const downloadImage = () => {
+    const image = document.createElement('a');
+    image.href = galleryImages[slideNumber].img;
+    image.target = '_blank';
+    image.click();
+  }
+
   return (
     <div className={style.imageContainer} >
       <div className={style.imgHeader}>
@@ -120,6 +134,9 @@ function ImagePreview(props) {
           <i className="fa-solid fa-magnifying-glass-plus"></i> </div>
         <div onClick={updateScaleMinus}>
           <i className="fa-solid fa-magnifying-glass-minus"></i>
+        </div>
+        <div onClick={downloadImage}>
+          <i class="fa fa-download" aria-hidden="true"></i>
         </div>
         <div>
           <select name="size"  onChange={(evt) => scaleAtParticularRatio(evt.target.value/100)}>
@@ -134,16 +151,16 @@ function ImagePreview(props) {
         className={style.carouselContainer}
         id="main-container"
       >
-        <div className={style.imageCarousel} id="image-container"
-          style={{
-            cursor: isInGrabState ? 'grab' : 'default',
-            transform: `rotate(${rotaion}deg)`,
-            height: `${height}px`,
-            width: `${width}px`
-          }}
-        >
-          {
-            galleryImages[slideNumber].img ?
+        {
+          galleryImages[slideNumber].img ?
+            <div className={style.imageCarousel} id="image-container"
+              style={{
+                cursor: isInGrabState ? 'grab' : 'default',
+                transform: `rotate(${rotaion}deg)`,
+                height: `${height}px`,
+                width: `${width}px`
+              }}
+            >
               <img
                 id="image"
                 className={style.imageCarouselImage}
@@ -151,18 +168,19 @@ function ImagePreview(props) {
                 alt=""
                 width={width}
                 height={height}
-              /> :
-              <Document
-                file={{ url: galleryImages[slideNumber].doc }}
-                options={{ workerSrc: "/pdf.worker.js" }}
-                onLoadSuccess={onDocumentLoadSuccess}
-              >
-                {Array.from(new Array(numPages), (el, index) => (
-                  <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-                ))}
-              </Document>
-          }
-        </div>
+              />
+            </div>
+            :
+            <Document
+              file={{ url: galleryImages[slideNumber].doc }}
+              options={{ workerSrc: "/pdf.worker.js" }}
+              onLoadSuccess={onDocumentLoadSuccess}
+            >
+              {Array.from(new Array(numPages), (el, index) => (
+                <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+              ))}
+            </Document>
+        }
       </div>
       <div className={style.left} onClick={prevSlide}>
         <i class="fa-solid fa-chevron-left fa-2xl"></i>
@@ -170,7 +188,6 @@ function ImagePreview(props) {
       <div className={style.right} onClick={nextSlide}>
         <i class="fa-solid fa-chevron-right fa-2xl"></i>
       </div>
-      {/* <div className={style.bottomAction}>header</div> */}
     </div>
   );
 }
