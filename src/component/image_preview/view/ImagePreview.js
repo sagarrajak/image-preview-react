@@ -78,9 +78,8 @@ function ImagePreview(props) {
 
   useEffect(() => {
     const imageContainer = document.getElementById('main-container');
-    const containerHeight = imageContainer.offsetHeight;
     const containerWidth = imageContainer.offsetWidth;
-    if (height > containerHeight || width > containerWidth) 
+    if (width > containerWidth) 
       setIsImageOverflow(true);
     else 
       setIsImageOverflow(false);
