@@ -57,7 +57,7 @@ function ImagePreview(props) {
   };
 
   const updateScalePlus = () => {
-    if(scale+0.05 >= 3) return;
+    if(scale+0.05 > 2) return;
     setScale(scale+0.05);
   } 
 
@@ -65,8 +65,6 @@ function ImagePreview(props) {
     if(scale - 0.05 < 0.5) return;
     setScale(scale - 0.05);
   }
-
-
 
   useEffect(() => {
     if (scale > 1) {
@@ -83,9 +81,13 @@ function ImagePreview(props) {
       const imageContainer = document.getElementById('main-container');
       const containerHeight = imageContainer.offsetHeight;
       if (height > containerHeight) {
-        setBaseHeight(containerHeight*0.98);
-        const aspectRatio = parseInt((height/width));
-        setBaseWidth((1/aspectRatio)*containerHeight*0.98);
+        setBaseHeight(containerHeight - 40);
+        const aspectRatio = +(height/width);
+        setBaseWidth((1/aspectRatio)*(containerHeight-40));
+        // console.log(aspectRatio+" "+(1/aspectRatio)*containerHeight*0.98)
+      } else {
+        setBaseHeight(height);
+        setBaseWidth(width)
       }
     };
     img.onload = function() {
@@ -95,7 +97,6 @@ function ImagePreview(props) {
 
 
   useEffect(() => {
-
     if (rotaion%180 === 0) {
       setWidth(baseWidth*scale);
       setHeight(baseHeight*scale);
@@ -142,7 +143,7 @@ function ImagePreview(props) {
           <i class="fa fa-download" aria-hidden="true"></i>
         </div>
         <div>
-          <select name="size"  onChange={(evt) => scaleAtParticularRatio(evt.target.value/100)}>
+          <select name="size" value={parseInt(scale)*100}  onChange={(evt) => scaleAtParticularRatio(evt.target.value/100)}>
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={200}>200</option>
@@ -161,7 +162,7 @@ function ImagePreview(props) {
                 cursor: isInGrabState ? 'grab' : 'default',
                 transform: `rotate(${rotaion}deg)`,
                 height: `${height}px`,
-                width: `${width}px`
+                width: `${width}px`,
               }}
             >
               <img
