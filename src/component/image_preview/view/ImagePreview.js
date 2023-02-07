@@ -17,6 +17,8 @@ function ImagePreview(props) {
   const [baseWidth, setBaseWidth] = useState();
   const [baseHeight, setBaseHeight] = useState();
 
+  const [isImageOverflow, setIsImageOverflow] = useState(false);
+
 
   const mainContainer = document.getElementById('main-container');
 
@@ -75,6 +77,16 @@ function ImagePreview(props) {
   }, [scale]);
 
   useEffect(() => {
+    const imageContainer = document.getElementById('main-container');
+    const containerHeight = imageContainer.offsetHeight;
+    const containerWidth = imageContainer.offsetWidth;
+    if (height > containerHeight || width > containerWidth) 
+      setIsImageOverflow(true);
+    else 
+      setIsImageOverflow(false);
+  }, [height, scale, width]);
+
+  useEffect(() => {
     const img = new Image();
     img.src = galleryImages[slideNumber].img;
     const checkIfContainerIsLargerThenImage = (width, height) => {
@@ -84,7 +96,6 @@ function ImagePreview(props) {
         setBaseHeight(containerHeight - 40);
         const aspectRatio = +(height/width);
         setBaseWidth((1/aspectRatio)*(containerHeight-40));
-        // console.log(aspectRatio+" "+(1/aspectRatio)*containerHeight*0.98)
       } else {
         setBaseHeight(height);
         setBaseWidth(width)
@@ -106,7 +117,7 @@ function ImagePreview(props) {
     }
   }, [scale, rotaion, baseHeight, baseWidth]);
 
-  const onClickRotate = () => {
+  const onClickRotateClockWise = () => {
     let newRotation = rotaion + 90;
     if (newRotation >= 360) {
       newRotation = 0;
@@ -114,8 +125,25 @@ function ImagePreview(props) {
     setRotation(newRotation);
   };
 
+  const onClickRotateAntiClockWise = () => {
+    let newRotation = rotaion - 90;
+    setRotation(newRotation);
+  };
+
+
   const scaleAtParticularRatio = (value) => {
     setScale(value)
+  };
+
+  const centerContainerWhenImageOverflow = () => {
+    if (!isImageOverflow) {
+      return {
+        display: 'flex',
+        'justify-content': 'center',
+        'align-items': 'center' 
+      }
+    }
+    return {};
   };
 
   const downloadImage = () => {
@@ -131,8 +159,11 @@ function ImagePreview(props) {
   return (
     <div className={style.imageContainer} >
       <div className={style.imgHeader}>
-        {isImageRotationEnabled && <div onClick={onClickRotate}>
+        {isImageRotationEnabled && <div onClick={onClickRotateClockWise}>
           <i className="fa-solid fa-rotate-right"></i>
+        </div>}
+        {isImageRotationEnabled && <div onClick={onClickRotateAntiClockWise}>
+          <i className="fa-solid fa-rotate-left"></i>
         </div>}
         <div onClick={updateScalePlus}>
           <i className="fa-solid fa-magnifying-glass-plus"></i> </div>
@@ -154,6 +185,9 @@ function ImagePreview(props) {
       <div
         className={style.carouselContainer}
         id="main-container"
+        style={{
+          ...centerContainerWhenImageOverflow()
+        }}
       >
         {
           galleryImages[slideNumber].img ?
@@ -171,6 +205,9 @@ function ImagePreview(props) {
                 src={galleryImages[slideNumber].img}
                 alt=""
                 width={width}
+                style={{
+                  display: 'block'
+                }}
                 height={height}
               />
             </div>

@@ -3,7 +3,7 @@ import style from "./imagePreview.module.css";
 import ImagePreview from "./ImagePreview";
 import SideBar from "./SideBar";
 function index() {
-    const galleryImages = [
+    const galleryImages2 = [
         {
           img: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
         },
@@ -33,7 +33,7 @@ function index() {
       ];
 
 
-      let galleryImages2 = [
+      let galleryImages = [
         {
             "id": 76180,
             "name": "DL",

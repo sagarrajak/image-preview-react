@@ -16,11 +16,6 @@
   background-color: rgb(60, 64, 67, 0.8);
   height: 100%;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  /* align-items: center; */
-  flex-direction: column;
-  /* overflow: scroll; */
 }
 
 .imgHeader {
@@ -56,11 +51,8 @@
   width: 100%;
   height: 100%;
   overflow: scroll;
-  display: flex;
-  justify-content: center;
-  object-fit: contain;
-  align-items: center;
   margin: auto;
+  object-fit: contain;
   position: relative;
 }
 
