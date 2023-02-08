@@ -35,7 +35,7 @@ function ImagePreview(props) {
     setScale(1);
   }
 
-  const prevSlide = () => {
+  const prevSlide = React.useCallback(() => {
     let currentIndex = null;
     currentIndex = slideNumber === 0
       ? galleryImages.length - 1
@@ -44,10 +44,10 @@ function ImagePreview(props) {
     setTimeout(() => {
       setSlideNumber(currentIndex);
     }, 100);
-  };
+  }, [galleryImages.length, slideNumber]);
 
   // Next Image
-  const nextSlide = () => {
+  const nextSlide = React.useCallback(() => {
     let currentIndex = null;
     currentIndex = slideNumber + 1 === galleryImages.length
       ? 0
@@ -56,7 +56,7 @@ function ImagePreview(props) {
     setTimeout(() => {
       setSlideNumber(currentIndex);
     }, 100);
-  };
+  }, [galleryImages.length, slideNumber]);
 
   const updateScalePlus = () => {
     if(scale+0.05 > 2) return;
@@ -155,8 +155,23 @@ function ImagePreview(props) {
     document.body.removeChild(link);
   }
 
+  useEffect(()=> {
+    const keyDownListerner = (event) => {
+      if (event.keyCode === 39) {
+          nextSlide();
+       }
+       else if (event.keyCode === 37) {
+          prevSlide();
+       }
+    }
+    document.addEventListener('keydown', keyDownListerner);
+    return () => {
+      document.removeEventListener('keydown', keyDownListerner);
+    }
+  }, [nextSlide, prevSlide]);
+
   return (
-    <div className={style.imageContainer} >
+    <div className={style.imageContainer}>
       <div className={style.imgHeader}>
         {isImageRotationEnabled && <div onClick={onClickRotateClockWise}>
           <i className="fa-solid fa-rotate-right"></i>
