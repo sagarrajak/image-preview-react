@@ -23,19 +23,33 @@
 }
 
 .imgHeader > div {
-  /* margin-right: 10px; */
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   width: 10%;
 }
 
-.nameSection {
+.imageHeaderFileName  {
   width: 20%;
 }
 
-.nameSection > h5 {
+.imageHeaderFileName > div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* width: 250px; */
+}
+
+.imageHeaderFileName > div > i {
+  margin-right: 10px
+}
+
+.imageHeaderFileName >  div > span {
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
+  display: inline-block;
+  width: 100px;
 }
 
 .imgHeader > div > div {

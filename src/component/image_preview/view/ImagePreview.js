@@ -181,21 +181,24 @@ function ImagePreview(props) {
   return (
     <div className={style.imageContainer}>
       <div className={style.imgHeader}>
-        <div className={style.nameSection}>
-            <h5>{galleryImages[slideNumber]?.name || ''}</h5>
+        <div className={style.imageHeaderFileName}>
+          <div>
+            <i className="fa-solid fa-image"></i>
+            <span>{galleryImages[slideNumber]?.name || ''}</span>
+          </div>
         </div>
         <div>
           <div onClick={updateScalePlus}>
             <i className="fa-solid fa-magnifying-glass-plus"></i> </div>
-          <div onClick={updateScaleMinus}>
-            <i className="fa-solid fa-magnifying-glass-minus"></i>
-          </div>
           <div>
             <select name="size" value={parseInt(scale) * 100} onChange={(evt) => scaleAtParticularRatio(evt.target.value / 100)}>
               <option value={50}>50</option>
               <option value={100}>100</option>
               <option value={200}>200</option>
             </select>
+          </div>
+          <div onClick={updateScaleMinus}>
+            <i className="fa-solid fa-magnifying-glass-minus"></i>
           </div>
         </div>
         <div>
