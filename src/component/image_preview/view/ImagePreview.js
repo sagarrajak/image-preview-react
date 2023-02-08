@@ -93,19 +93,19 @@ function ImagePreview(props) {
   }, [height, scale, width]);
 
   useEffect(() => {
-    const resizeRatio = 0.95;
+    const resizeRatio = 0.9;
     const img = new Image();
     img.src = galleryImages[slideNumber].img;
     const checkIfContainerIsLargerThenImage = (width, height) => {
       const imageContainer = document.getElementById('main-container');
       const containerHeight = imageContainer.offsetHeight;
       if (height > containerHeight) {
-        setBaseHeight((containerHeight - 40)*resizeRatio);
+        setBaseHeight((containerHeight)*resizeRatio);
         const aspectRatio = +(height/width);
-        setBaseWidth((1/aspectRatio)*(containerHeight-40)*resizeRatio);
+        setBaseWidth((1/aspectRatio)*(containerHeight)*resizeRatio);
       } else {
-        setBaseHeight((height - 40)*resizeRatio);
-        setBaseWidth((width - 40)*resizeRatio)
+        setBaseHeight((height)*resizeRatio);
+        setBaseWidth((width)*resizeRatio)
       }
     };
     img.onload = function() {
