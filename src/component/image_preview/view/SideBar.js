@@ -1,5 +1,6 @@
 import Drawer from '@mui/material/Drawer';
 import { styled } from '@mui/material/styles';
+import ImagePreview  from './ImagePreview';
 import React from "react";
 
 const drawerWidth = 240;
@@ -10,7 +11,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
   overflow: 'hidden'
 }));
 
-function SideBar({ children, drawerChildren }) {
+function SideBar({ children, onChange, galleryImages }) {
   return (
     <>
       <Drawer
@@ -26,10 +27,10 @@ function SideBar({ children, drawerChildren }) {
         anchor="right"
         open={true}
       >
-        {drawerChildren}
+        {children}
       </Drawer>
       <Main>
-        {children}
+        <ImagePreview onChange={onChange} galleryImages={galleryImages} />
       </Main>
     </>
   );
