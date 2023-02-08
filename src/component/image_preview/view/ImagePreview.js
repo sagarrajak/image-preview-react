@@ -93,7 +93,7 @@ function ImagePreview(props) {
   }, [height, scale, width]);
 
   useEffect(() => {
-    const resizeRatio = 0.9;
+    const resizeRatio = 0.95;
     const img = new Image();
     img.src = galleryImages[slideNumber].img;
     const checkIfContainerIsLargerThenImage = (width, height) => {
@@ -181,26 +181,33 @@ function ImagePreview(props) {
   return (
     <div className={style.imageContainer}>
       <div className={style.imgHeader}>
-        {isImageRotationEnabled && <div onClick={onClickRotateClockWise}>
-          <i className="fa-solid fa-rotate-right"></i>
-        </div>}
-        {isImageRotationEnabled && <div onClick={onClickRotateAntiClockWise}>
-          <i className="fa-solid fa-rotate-left"></i>
-        </div>}
-        <div onClick={updateScalePlus}>
-          <i className="fa-solid fa-magnifying-glass-plus"></i> </div>
-        <div onClick={updateScaleMinus}>
-          <i className="fa-solid fa-magnifying-glass-minus"></i>
-        </div>
-        <div onClick={downloadImage}>
-          <i class="fa fa-download" aria-hidden="true"></i>
+        <div className={style.nameSection}>
+            <h5>{galleryImages[slideNumber]?.name || ''}</h5>
         </div>
         <div>
-          <select name="size" value={parseInt(scale)*100}  onChange={(evt) => scaleAtParticularRatio(evt.target.value/100)}>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-            <option value={200}>200</option>
-          </select>
+          <div onClick={updateScalePlus}>
+            <i className="fa-solid fa-magnifying-glass-plus"></i> </div>
+          <div onClick={updateScaleMinus}>
+            <i className="fa-solid fa-magnifying-glass-minus"></i>
+          </div>
+          <div>
+            <select name="size" value={parseInt(scale) * 100} onChange={(evt) => scaleAtParticularRatio(evt.target.value / 100)}>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={200}>200</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          {isImageRotationEnabled && <div onClick={onClickRotateAntiClockWise}>
+            <i className="fa-solid fa-rotate-left"></i>
+          </div>}
+          {isImageRotationEnabled && <div onClick={onClickRotateClockWise}>
+            <i className="fa-solid fa-rotate-right"></i>
+          </div>}
+          <div onClick={downloadImage}>
+            <i class="fa fa-download" aria-hidden="true"></i>
+          </div>
         </div>
       </div>
       <div

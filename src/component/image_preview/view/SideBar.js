@@ -11,28 +11,37 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
   overflow: 'hidden'
 }));
 
-function SideBar({ children, onChange, galleryImages }) {
+
+function SideBar({ children, onChange, galleryImages, hideDrawer }) {
   return (
-    <>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="persistent"
-        anchor="right"
-        open={true}
-      >
-        {children}
-      </Drawer>
-      <Main>
+    hideDrawer ?
+      <div style={{
+        width: '100vw',
+        height: '100vh',
+        overflow: 'hidden'
+      }}>
         <ImagePreview onChange={onChange} galleryImages={galleryImages} />
-      </Main>
-    </>
+      </div> :
+      <>
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant="persistent"
+          anchor="right"
+          open={true}
+        >
+          {children}
+        </Drawer>
+        <Main>
+          <ImagePreview onChange={onChange} galleryImages={galleryImages} />
+        </Main>
+      </>
   );
 }
 
