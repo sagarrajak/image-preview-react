@@ -4,7 +4,7 @@ import { useMouseDrag } from './useMouseDrag';
 import { Document, Page } from 'react-pdf';
 
 function ImagePreview(props) {
-  const { galleryImages } = props;
+  const { galleryImages, onChange } = props;
   const [slideNumber, setSlideNumber] = useState(0);
   const [rotaion, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
@@ -43,8 +43,12 @@ function ImagePreview(props) {
     resetBeforeScroll();
     setTimeout(() => {
       setSlideNumber(currentIndex);
+      if (onChange) {
+        onChange(currentIndex);
+      }
     }, 100);
-  }, [galleryImages.length, slideNumber]);
+
+  }, [galleryImages.length, slideNumber, onChange]);
 
   // Next Image
   const nextSlide = React.useCallback(() => {
@@ -55,8 +59,11 @@ function ImagePreview(props) {
     resetBeforeScroll();
     setTimeout(() => {
       setSlideNumber(currentIndex);
+      if (onChange) {
+        onChange(currentIndex);
+      }
     }, 100);
-  }, [galleryImages.length, slideNumber]);
+  }, [galleryImages.length, slideNumber, onChange]);
 
   const updateScalePlus = () => {
     if(scale+0.05 > 2) return;
@@ -86,18 +93,19 @@ function ImagePreview(props) {
   }, [height, scale, width]);
 
   useEffect(() => {
+    const resizeRatio = 0.9;
     const img = new Image();
     img.src = galleryImages[slideNumber].img;
     const checkIfContainerIsLargerThenImage = (width, height) => {
       const imageContainer = document.getElementById('main-container');
       const containerHeight = imageContainer.offsetHeight;
       if (height > containerHeight) {
-        setBaseHeight(containerHeight - 40);
+        setBaseHeight((containerHeight - 40)*resizeRatio);
         const aspectRatio = +(height/width);
-        setBaseWidth((1/aspectRatio)*(containerHeight-40));
+        setBaseWidth((1/aspectRatio)*(containerHeight-40)*resizeRatio);
       } else {
-        setBaseHeight(height);
-        setBaseWidth(width)
+        setBaseHeight((height - 40)*resizeRatio);
+        setBaseWidth((width - 40)*resizeRatio)
       }
     };
     img.onload = function() {
@@ -195,7 +203,6 @@ function ImagePreview(props) {
           </select>
         </div>
       </div>
-
       <div
         className={style.carouselContainer}
         id="main-container"
