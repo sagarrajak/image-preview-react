@@ -209,8 +209,14 @@ function ImagePreview(props) {
             <i className="fa-solid fa-rotate-right"></i>
           </div>}
           <div onClick={downloadImage}>
-            <i class="fa fa-download" aria-hidden="true"></i>
+            <i className="fa fa-download" aria-hidden="true"></i>
           </div>
+          {(scale > 1) && <div onClick={() => setScale(1)}>
+            <i className='fa-solid fa-minimize' aria-hidden="true"></i>
+          </div>}
+          {(scale < 1) && <div onClick={() => setScale(1)}>
+              <i class="fa-solid fa-maximize" aria-hidden="true"></i>
+          </div>}
         </div>
       </div>
       <div
